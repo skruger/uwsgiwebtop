@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap 101 Template</title>
+
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+    <h2>Hello World!</h2>
+    <table class="table" id="statstable">
+
+    </table>
+    <textarea id="message-out" style="width: 100%;height: 200px;"></textarea>
+
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/js/bootstrap.js"></script>
+    <script src="/static/js/mustache.js"></script>
+    <script>
+        function start_websocket(){
+            var ws = new WebSocket("ws://"+window.location.host+"/ws");
+            ws.onmessage = function(msg){
+//                console.log(msg);
+                $('#message-out').html(msg.data+'\n');
+//        return;
+//                $('#message-out').scrollTop($('#message-out')[0].scrollHeight)
+                var stats_html = $('#status-header').html();
+                var data = $.parseJSON(msg.data);
+        var row_source = $("#status-row").html();
+//        var row_template = Handlebars.compile(row_source);
+                for(var i=0; i < data.length; i++){
+                    for(var w=0; w<data[i].workers.length; w++){
+                        var worker = data[i].workers[w];
+                        var row_data = {host: data[i].url,
+                                        wid: worker.id,
+                                        percent: "",
+                                        requests: worker.requests,
+                                        status: worker.status,
+                                        average: "",
+                                        tx: ""};
+
+                        stats_html = stats_html+Mustache.render(row_source, row_data);
+
+                    }
+//                    console.log("Got: "+data[i].url);
+
+                }
+                $('#statstable').html(stats_html);
+
+            };
+            ws.onclose = function(msg){
+                console.log("Websocket closed.  Trying to reconnect.");
+                setTimeout(start_websocket, 1000);
+            };
+        }
+        start_websocket();
+    </script>
+<script id="status-header" type="text/x-handlebars-template">
+    <tr>
+        <th>Host</th>
+        <th>WID</th>
+        <th>%</th>
+        <th>PID</th>
+        <th>REQ</th>
+        <th>STATUS</th>
+        <th>AVG</th>
+        <th>TX</th>
+    </tr>
+</script>
+<script id="status-row" type="text/x-handlebars-template">
+    <tr>
+        <td>{{host}}</td>
+        <td>{{wid}</td>
+        <td>{{percent}}</td>
+        <td>{{pid}}</td>
+        <td>{{requests}}</td>
+        <td>{{status}}</td>
+        <td>{{average}}</td>
+        <td>{{tx}}</td>
+    </tr>
+</script>
+
+
+</body>
+</html>
