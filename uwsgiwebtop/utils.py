@@ -5,11 +5,10 @@ import json
 
 from collections import OrderedDict
 
-STATS_URLS = os.environ.get("STATS_URLS", "").split(',')
-
 def collect_stats():
     results = OrderedDict()
-    for url in STATS_URLS:
+    stats_urls = os.environ.get("UWSGIWEBTOP_STATS_URLS", "").split(',')
+    for url in stats_urls:
         try:
             data = ''
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -18,19 +18,19 @@
 
 </head>
 <body>
-    <h2>Hello World!</h2>
+    <h2>uWSGI Web Top</h2>
     <table class="table" id="statstable">
-
+        <tr><td><h1>Loading...</h1></td></tr>
     </table>
-    <textarea id="message-out" style="width: 100%;height: 200px;"></textarea>
+    <textarea id="message-out" style="display:none;width: 100%;height: 200px;"></textarea>
 
 
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/static/js/jquery-1.11.1.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/static/js/bootstrap.js"></script>
-    <script src="/static/js/mustache.js"></script>
+    <script src="/static/js/handlebars.js"></script>
     <script>
         function start_websocket(){
             var ws = new WebSocket("ws://"+window.location.host+"/ws");
@@ -42,19 +42,20 @@
                 var stats_html = $('#status-header').html();
                 var data = $.parseJSON(msg.data);
         var row_source = $("#status-row").html();
-//        var row_template = Handlebars.compile(row_source);
+        var row_template = Handlebars.compile(row_source);
                 for(var i=0; i < data.length; i++){
                     for(var w=0; w<data[i].workers.length; w++){
                         var worker = data[i].workers[w];
                         var row_data = {host: data[i].url,
                                         wid: worker.id,
-                                        percent: "",
+                                        pid: worker.pid,
                                         requests: worker.requests,
                                         status: worker.status,
-                                        average: "",
-                                        tx: ""};
+                                        average: worker.avg_rt,
+                                        tx: worker.tx};
 
-                        stats_html = stats_html+Mustache.render(row_source, row_data);
+//                        stats_html = stats_html+Mustache.render(row_source, row_data);
+                        stats_html = stats_html+row_template(row_data);
 
                     }
 //                    console.log("Got: "+data[i].url);
@@ -74,7 +75,6 @@
     <tr>
         <th>Host</th>
         <th>WID</th>
-        <th>%</th>
         <th>PID</th>
         <th>REQ</th>
         <th>STATUS</th>
@@ -85,8 +85,7 @@
 <script id="status-row" type="text/x-handlebars-template">
     <tr>
         <td>{{host}}</td>
-        <td>{{wid}</td>
-        <td>{{percent}}</td>
+        <td>{{wid}}</td>
         <td>{{pid}}</td>
         <td>{{requests}}</td>
         <td>{{status}}</td>
