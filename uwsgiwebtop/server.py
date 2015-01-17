@@ -39,9 +39,11 @@ class Root(object):
         handler = cherrypy.request.ws_handler
 
 
-def run_server(port=8088):
+def run_server(host='0.0.0.0', port=8088):
 
-    cherrypy.config.update({'server.socket_port': port})
+    cherrypy.config.update({'server.socket_port': port,
+                            'server.socket_host': host,
+                            })
     WebSocketPlugin(cherrypy.engine).subscribe()
     cherrypy.tools.websocket = WebSocketTool()
     Monitor(cherrypy.engine, refresh_top_data, 2).subscribe()
