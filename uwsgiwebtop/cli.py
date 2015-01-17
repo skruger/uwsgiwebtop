@@ -26,7 +26,8 @@ def main():
             print USAGE
             return
     if not stats:
-        print "{}\nRequired option not supplied."
+        print "{}\nRequired option not supplied.".format(USAGE)
+        return
     os.environ["UWSGIWEBTOP_STATS_URLS"] = stats
     server.run_server(port=port)
 
