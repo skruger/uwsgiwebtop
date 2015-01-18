@@ -21,10 +21,27 @@ def collect_stats():
                     break
                 data += buff
 
-            results[url] = json.loads(data)
+            stats = json.loads(data)
+            for w in stats['workers']:
+                for c in w['cores']:
+                    c['vars_dict'] = parse_core_vars(c['vars'])
+
+            results[url] = stats
             results[url]['url'] = url
         except Exception as e:
-            print "Exception {}: {}".format(e.__class__.__name__, e)
+            print "Exception {}: {} while processing {}".format(e.__class__.__name__, e, url)
 
     for r in results:
         yield results[r]
+
+
+def parse_core_vars(vars):
+    result = dict()
+    for v in vars:
+        try:
+            k, val = v.split('=', 1)
+            result[k] = val
+        except ValueError:
+            # Ignore anything that doesn't parse with an '='
+            pass
+    return result

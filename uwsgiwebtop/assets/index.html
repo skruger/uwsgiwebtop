@@ -43,16 +43,34 @@
                 var data = $.parseJSON(msg.data);
         var row_source = $("#status-row").html();
         var row_template = Handlebars.compile(row_source);
+        var core_source = $("#core-info").html();
+        var core_template = Handlebars.compile(core_source);
                 for(var i=0; i < data.length; i++){
                     for(var w=0; w<data[i].workers.length; w++){
                         var worker = data[i].workers[w];
-                        var row_data = {host: data[i].url,
-                                        wid: worker.id,
-                                        pid: worker.pid,
-                                        requests: worker.requests,
-                                        status: worker.status,
-                                        average: worker.avg_rt,
-                                        tx: worker.tx};
+                        var core_info = "";
+                        if (worker.status == "busy"){
+                            for (var c=0; c<worker.cores.length; c++){
+                                var core = worker.cores[c];
+                                var core_data = {
+                                    wid: worker.id,
+                                    core_id: core.id,
+                                    url: core.vars_dict.PATH_INFO
+                                }
+                                core_info = core_template(core_data);
+                            }
+                        }
+                        var row_data = {
+                            host: data[i].url,
+                            wid: worker.id,
+                            pid: worker.pid,
+                            requests: worker.requests,
+                            status: worker.status,
+                            average: worker.avg_rt,
+                            tx: worker.tx,
+                            bgclass: worker.status == "idle" ? "bg-warning" : "bg-success",
+                            core_info: core_info
+                        };
 
 //                        stats_html = stats_html+Mustache.render(row_source, row_data);
                         stats_html = stats_html+row_template(row_data);
@@ -80,10 +98,11 @@
         <th>STATUS</th>
         <th>AVG</th>
         <th>TX</th>
+        <th>URL</th>
     </tr>
 </script>
 <script id="status-row" type="text/x-handlebars-template">
-    <tr>
+    <tr class="{{bgclass}}">
         <td>{{host}}</td>
         <td>{{wid}}</td>
         <td>{{pid}}</td>
@@ -91,7 +110,11 @@
         <td>{{status}}</td>
         <td>{{average}}</td>
         <td>{{tx}}</td>
+        <td>{{{core_info}}}</td>
     </tr>
+</script>
+<script id="core-info" type="text/x-handlebars-template">
+    {{url}}<br/>
 </script>
 
 

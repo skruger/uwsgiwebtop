@@ -24,8 +24,9 @@ class DataUpdateSocket(WebSocket):
 
 def refresh_top_data():
     data = list(utils.collect_stats())
+    text = json.dumps(data, indent=2, sort_keys=True)
     for s in SUBSCRIBERS:
-        s.send(json.dumps(data))
+        s.send(text)
 
 
 class Root(object):
@@ -46,7 +47,7 @@ def run_server(host='0.0.0.0', port=8088):
                             })
     WebSocketPlugin(cherrypy.engine).subscribe()
     cherrypy.tools.websocket = WebSocketTool()
-    Monitor(cherrypy.engine, refresh_top_data, 2).subscribe()
+    Monitor(cherrypy.engine, refresh_top_data, 1).subscribe()
 
     wsconf = {'tools.websocket.on': True,
               'tools.websocket.handler_cls': DataUpdateSocket,
