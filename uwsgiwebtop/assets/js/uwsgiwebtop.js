@@ -81,9 +81,11 @@ function start_websocket(){
                     requests: worker.requests,
                     status: worker.status,
                     average: worker.avg_rt,
-                    tx: format_byte_units(worker.tx),
+                    tx: worker.tx,
+                    tx_display:  format_byte_units(worker.tx),
                     bgclass: worker.status == "idle" ? "bg-success" : "bg-warning",
-                    core_info: core_info
+                    core_info: core_info,
+                    cores: worker.cores
                 };
                 row_data.html = row_template(row_data);
                 display_rows.push(row_data);
@@ -106,18 +108,29 @@ function start_websocket(){
     };
 }
 
+function set_pause(pausenow){
+    if(pausenow){
+        $('#playpause-icon').attr('playstate', "pause");
+        $('#playpause-icon').attr("class", 'glyphicon glyphicon-play');
+    }else{
+        $('#playpause-icon').attr('playstate', "play");
+        $('#playpause-icon').attr("class", 'glyphicon glyphicon-pause');
+    }
+}
+
+function show_info(context){
+    set_pause(true);
+    $(context).parent().children('.modal').modal('show');
+    return false;
+}
+
+
 $(document).ready(function(){
     $(document).on("submit", "form.navbar-form", function(e){
         return false;
     });
     $('#toggle_playpause').click(function(){
-        if($('#playpause-icon').attr('playstate') == "play"){
-            $('#playpause-icon').attr('playstate', "pause");
-            $('#playpause-icon').attr("class", 'glyphicon glyphicon-play');
-        }else{
-            $('#playpause-icon').attr('playstate', "play");
-            $('#playpause-icon').attr("class", 'glyphicon glyphicon-pause');
-        }
+        set_pause($('#playpause-icon').attr('playstate') == "play");
     });
     start_websocket();
 });

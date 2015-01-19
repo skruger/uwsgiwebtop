@@ -69,10 +69,44 @@
             <td>{{requests}}</td>
             <td>{{status}}</td>
             <td>{{average}}</td>
-            <td>{{tx}}</td>
+            <td>{{tx_display}}</td>
         </tr>
         <tr class="{{bgclass}}">
-            <td colspan="7" style="padding-left:150px;">{{{core_info}}}</td>
+            <td colspan="7" class="urlinfo" style="padding-left:150px;">
+                <a href="#" onclick="return show_info(this);">
+                    {{{core_info}}}
+                </a>
+                <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                                    <span aria-hidden="true">&times;</span>
+
+                                </button>
+                                <h4>Host: {{host}} - Worker ID:{{wid}} - PID: {{pid}}</h4>
+                            </div>
+                            <div class="modal-body">
+                                {{#each cores}}
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Core: {{id}}</h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <ul>
+                                            {{#each vars}}
+                                            <li>{{this}}</li>
+                                            {{/each}}
+                                        </ul>
+                                    </div>
+                                </div>
+                                {{/each}}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </td>
         </tr>
     </script>
     <script id="core-info" type="text/x-handlebars-template">
