@@ -19,6 +19,15 @@
         body{
             padding-top: 50px;
         }
+        table tr th{
+            text-align:center;
+        }
+        table tr td{
+            text-align:right;
+        }
+        table tr td.left{
+            text-align:left;
+        }
     </style>
 
 </head>
@@ -52,26 +61,38 @@
     <script src="/static/js/handlebars.js"></script>
     <script id="status-header" type="text/x-handlebars-template">
         <tr>
-            <th><a href="#" onclick="set_sort('default');">Host</a></th>
-            <th><a href="#" onclick="set_sort('default');">WID</a></th>
-            <th>PID</th>
-            <th><a href="#" onclick="set_sort('requests');">REQ</a></th>
-            <th><a href="#" onclick="set_sort('status');">STATUS</a></th>
-            <th><a href="#" onclick="set_sort('average');">AVG</a></th>
-            <th><a href="#" onclick="set_sort('tx');">TX</a></th>
+            <th style="width: 230px;">
+                <a href="#" onclick="set_sort('default');">Host</a>
+            </th>
+            <th style="width: 30px;">
+                <a href="#" onclick="set_sort('default');">WID</a>
+            </th>
+            <th style="width: 60px;">PID</th>
+            <th style="width: 60px;">
+                <a href="#" onclick="set_sort('requests');">REQ</a>
+            </th>
+            <th style="width: 60px;">
+                <a href="#" onclick="set_sort('status');">STATUS</a>
+            </th>
+            <th style="width: 70px;">
+                <a href="#" onclick="set_sort('average');">AVG</a>
+            </th>
+            <th style="width: 50px;">
+                <a href="#" onclick="set_sort('tx');">TX</a>
+            </th>
             <th>URL</th>
         </tr>
     </script>
     <script id="status-row" type="text/x-handlebars-template">
         <tr class="{{bgclass}}">
-            <td>{{host}}</td>
+            <td class="left">{{host}}</td>
             <td>{{wid}}</td>
             <td>{{pid}}</td>
             <td>{{requests}}</td>
             <td>{{status}}</td>
             <td>{{average}}</td>
             <td>{{tx_display}}</td>
-            <td class="urlinfo">
+            <td class="urlinfo left" style="padding-left: 10px;">
                 <a href="#" onclick="return show_info(this);">
                     {{{core_info}}}
                 </a>
