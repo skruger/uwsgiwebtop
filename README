@@ -1,0 +1,20 @@
+Using uWSGI Web Top
+*******************
+
+uWSGI Web Top provides an aggregated view for watching all uWSGI instances
+in a multi-host cluster.  uWSGI Web Top must be accessed from a websockets
+capable browser.
+
+CLI flags
+=========
+
+-p <port>
+    Port number to listen on
+
+-s <url1>,<url2>,<url n..>
+--stats <url1>,<url2>,<url n..>
+    Stats TCP sockets to read (required)
+
+Example
+=======
+uwsgi-webtop -p 8088 -s web1:9000,web2:9000,web3:9000
