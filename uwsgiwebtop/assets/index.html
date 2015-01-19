@@ -86,13 +86,17 @@
     <script id="status-row" type="text/x-handlebars-template">
         <tr class="{{bgclass}}">
             <td class="left">{{host}}</td>
-            <td>{{wid}}</td>
+            <td>{{worker.id}}</td>
             <td>{{pid}}</td>
             <td>{{requests}}</td>
             <td>{{status}}</td>
             <td>{{average}}</td>
             <td>{{tx_display}}</td>
             <td class="urlinfo left" style="padding-left: 10px;">
+                {{#if problem_worker}}
+                <span class="glyphicon glyphicon-exclamation-sign"></span>
+                ({{worker.busy_time}} sec)
+                {{/if}}
                 <a href="#" onclick="return show_info(this);">
                     {{{core_info}}}
                 </a>

@@ -76,6 +76,8 @@ function start_websocket(){
                 }
                 var row_data = {
                     host: data[i].url,
+                    problem_worker: (worker.busy_time > 60),
+                    worker: worker,
                     wid: worker.id,
                     pid: worker.pid,
                     requests: worker.requests,
