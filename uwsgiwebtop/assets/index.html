@@ -32,6 +32,18 @@
     <script src="/static/js/bootstrap.js"></script>
     <script src="/static/js/handlebars.js"></script>
     <script>
+        var sort_function = null;
+        var sort_methods = {
+            'requests': function(a,b){if(a.requests> b.requests){return 1;}if(a.requests< b.requests){return -1;}return 0;},
+            'status': function(a,b){if(a.status> b.status){return 1;}if(a.status< b.status){return -1;}return 0;},
+            'average': function(a,b){if(a.average> b.average){return 1;}if(a.average< b.average){return -1;}return 0;},
+            'tx': function(a,b){if(a.tx> b.tx){return 1;}if(a.tx< b.tx){return -1}return 0;},
+            'url': function(a,b){if(a.core_info> b.core_info){return 1;}if(a.core_info< b.core_info){return -1}return 0;},
+            'default': null
+        };
+        function set_sort(name){
+            sort_function = sort_methods[name];
+        }
         function start_websocket(){
             var ws = new WebSocket("ws://"+window.location.host+"/ws");
             ws.onmessage = function(msg){
@@ -45,6 +57,7 @@
         var row_template = Handlebars.compile(row_source);
         var core_source = $("#core-info").html();
         var core_template = Handlebars.compile(core_source);
+                var display_rows = [];
                 for(var i=0; i < data.length; i++){
                     for(var w=0; w<data[i].workers.length; w++){
                         var worker = data[i].workers[w];
@@ -71,13 +84,15 @@
                             bgclass: worker.status == "idle" ? "bg-warning" : "bg-success",
                             core_info: core_info
                         };
-
-//                        stats_html = stats_html+Mustache.render(row_source, row_data);
-                        stats_html = stats_html+row_template(row_data);
-
+                        row_data.html = row_template(row_data);
+                        display_rows.push(row_data);
                     }
-//                    console.log("Got: "+data[i].url);
-
+                }
+                if(sort_function){
+                    display_rows.sort(sort_function);
+                }
+                for (var i=0; i<display_rows.length; i++){
+                    stats_html = stats_html + display_rows[i].html;
                 }
                 $('#statstable').html(stats_html);
 
@@ -91,14 +106,14 @@
     </script>
 <script id="status-header" type="text/x-handlebars-template">
     <tr>
-        <th>Host</th>
-        <th>WID</th>
+        <th onclick="set_sort('default');">Host</th>
+        <th onclick="set_sort('default');">WID</th>
         <th>PID</th>
-        <th>REQ</th>
-        <th>STATUS</th>
-        <th>AVG</th>
-        <th>TX</th>
-        <th>URL</th>
+        <th onclick="set_sort('requests');">REQ</th>
+        <th onclick="set_sort('status');">STATUS</th>
+        <th onclick="set_sort('average');">AVG</th>
+        <th onclick="set_sort('tx');">TX</th>
+        <th onclick="set_sort('url');">URL</th>
     </tr>
 </script>
 <script id="status-row" type="text/x-handlebars-template">
