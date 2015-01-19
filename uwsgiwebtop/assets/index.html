@@ -59,6 +59,7 @@
             <th><a href="#" onclick="set_sort('status');">STATUS</a></th>
             <th><a href="#" onclick="set_sort('average');">AVG</a></th>
             <th><a href="#" onclick="set_sort('tx');">TX</a></th>
+            <th>URL</th>
         </tr>
     </script>
     <script id="status-row" type="text/x-handlebars-template">
@@ -70,9 +71,7 @@
             <td>{{status}}</td>
             <td>{{average}}</td>
             <td>{{tx_display}}</td>
-        </tr>
-        <tr class="{{bgclass}}">
-            <td colspan="7" class="urlinfo" style="padding-left:150px;">
+            <td class="urlinfo">
                 <a href="#" onclick="return show_info(this);">
                     {{{core_info}}}
                 </a>

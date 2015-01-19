@@ -69,7 +69,7 @@ function start_websocket(){
                         var core_data = {
                             wid: worker.id,
                             core_id: core.id,
-                            url: core.vars_dict.REQUEST_URI
+                            url: core.vars_dict.PATH_INFO
                         }
                         core_info = core_template(core_data);
                     }
