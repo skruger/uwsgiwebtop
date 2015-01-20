@@ -11,7 +11,7 @@ install_reqs = parse_requirements("REQUIREMENTS.txt")
 entry_points = {'console_scripts': ['uwsgi-webtop=uwsgiwebtop.cli:main']}
 
 setup(name='uwsgiwebtop',
-      version='0.1',
+      version='0.2',
       url='https://github.com/skruger/uwsgiwebtop',
       description='Web application to aggregate stats from multiple uWSGI instances',
       long_description=open(os.path.join(os.path.dirname(__file__), 'README')).read(),
