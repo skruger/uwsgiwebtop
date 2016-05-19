@@ -23,11 +23,13 @@ class DataUpdateSocket(WebSocket):
 
 
 def refresh_top_data():
-    data = list(utils.collect_stats())
-    text = json.dumps(data, indent=2, sort_keys=True)
-    for s in SUBSCRIBERS:
-        s.send(text)
-
+    try:
+        data = list(utils.collect_stats())
+        text = json.dumps(data, indent=2, sort_keys=True)
+        for s in SUBSCRIBERS:
+            s.send(text)
+    except Exception as e:
+        print "refresh_top_data(): {}: {}".format(e.__class__.__name__, e)
 
 class Root(object):
     @cherrypy.expose
